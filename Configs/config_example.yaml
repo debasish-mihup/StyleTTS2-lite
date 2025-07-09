@@ -56,12 +56,58 @@ model_params:
   # config for decoder
   decoder: # either hifigan or istftnet or vocos
 
-      type: hifigan
-      resblock_kernel_sizes: [3,7,11]
-      upsample_rates :  [10,5,3,2]
+      type: 'istftnet2_mb'
+  
+      # 1D CNN backbone configuration (temporal modeling)
+      resblock_kernel_sizes: [3, 7, 11]
+      upsample_rates: [10, 6, 1, 1]              # Paper-optimized: reduced temporal upsampling
       upsample_initial_channel: 512
       resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
-      upsample_kernel_sizes: [20,10,6,4]
+      upsample_kernel_sizes: [20, 12, 3, 3]      # Must match length of upsample_rates
+      
+      # iSTFT configuration
+      gen_istft_n_fft: 20                        # Small FFT for fast iSTFT
+      gen_istft_hop_size: 5                      # Optimized hop size
+      
+      # Multi-band processing
+      num_bands: 4                               # Paper's recommended 4 bands
+      
+      # 2D CNN configuration (spectrogram modeling)
+      freq_dim: 16                               # Initial frequency dimension
+      freq_upsample_rates: [2, 2]                # Frequency upsampling [2,2] = 4x total
+      use_shuffle_blocks: true                   # Use efficient ShuffleBlocks
+      num_2d_blocks: 3                           # Number of 2D processing blocks
+      
+      # Inference optimization (optional)
+      remove_weight_norm: false                  # Set to true for inference
+
+
+      # Maximum Speed Configuration
+      
+      # type: 'istftnet2_mb'
+      # resblock_kernel_sizes: [3, 7, 11]
+      # upsample_rates: [10, 6, 1, 1]
+      # upsample_initial_channel: 256              # Reduced for speed
+      # resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
+      # upsample_kernel_sizes: [20, 12, 3, 3]
+      # gen_istft_n_fft: 16                        # Smaller FFT
+      # gen_istft_hop_size: 4
+      # num_bands: 2                               # Fewer bands
+      # freq_dim: 8                                # Smaller frequency dimension
+      # freq_upsample_rates: [2, 2]
+      # use_shuffle_blocks: true
+      # num_2d_blocks: 2                           # Fewer blocks
+      # remove_weight_norm: false                  # Set to true for inference
+
+
+
+      
+      # type: hifigan
+      # resblock_kernel_sizes: [3,7,11]
+      # upsample_rates :  [10,5,3,2]
+      # upsample_initial_channel: 512
+      # resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
+      # upsample_kernel_sizes: [20,10,6,4]
       
       # type: 'istftnet'
       # resblock_kernel_sizes: [3,7,11]
