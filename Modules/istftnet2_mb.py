@@ -495,6 +495,6 @@ def test_istftnet2mb():
     return model
 
 
-if __name__ == "__main__":
-    model = test_istftnet2mb()
-    print("iSTFTNet2-MB test completed successfully!")
+# if __name__ == "__main__":
+#     model = test_istftnet2mb()
+#     print("iSTFTNet2-MB test completed successfully!")
