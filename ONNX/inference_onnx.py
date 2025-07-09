@@ -128,7 +128,7 @@ class StyleTTS2(torch.nn.Module):
         assert args.decoder.type in ['istftnet2_mb', 'istftnet', 'hifigan'], 'Decoder type unknown'
 
         if args.decoder.type == "istftnet2_mb":
-            from Modules.ONNX.istftnet2_mb import Decoder
+            from Modules.ONNX.istftnet2_mb_onnx import Decoder
             
             # Get all configuration values with proper defaults
             decoder_config = args.decoder
