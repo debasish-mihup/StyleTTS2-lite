@@ -125,9 +125,47 @@ class StyleTTS2(torch.nn.Module):
         args = self.__recursive_munch(config['model_params'])
         args['n_token'] = n_token
 
-        assert args.decoder.type in ['istftnet', 'hifigan'], 'Decoder type unknown'
-    
-        if args.decoder.type == "istftnet":
+        assert args.decoder.type in ['istftnet2_mb', 'istftnet', 'hifigan'], 'Decoder type unknown'
+
+        if args.decoder.type == "istftnet2_mb":
+            from Modules.ONNX.istftnet2_mb import Decoder
+            
+            # Get all configuration values with proper defaults
+            decoder_config = args.decoder
+            
+            decoder = Decoder(
+                # Core dimensions
+                dim_in=getattr(args, 'hidden_dim', 512),
+                style_dim=getattr(args, 'style_dim', 128), 
+                dim_out=getattr(args, 'n_mels', 80),
+                
+                # 1D CNN backbone configuration
+                resblock_kernel_sizes=getattr(decoder_config, 'resblock_kernel_sizes', [3, 7, 11]),
+                upsample_rates=getattr(decoder_config, 'upsample_rates', [10, 6, 1, 1]),
+                upsample_initial_channel=getattr(decoder_config, 'upsample_initial_channel', 512),
+                resblock_dilation_sizes=getattr(decoder_config, 'resblock_dilation_sizes', 
+                                              [[1, 3, 5], [1, 3, 5], [1, 3, 5]]),
+                upsample_kernel_sizes=getattr(decoder_config, 'upsample_kernel_sizes', [20, 12, 3, 3]),
+                
+                # iSTFT configuration
+                gen_istft_n_fft=getattr(decoder_config, 'gen_istft_n_fft', 20),
+                gen_istft_hop_size=getattr(decoder_config, 'gen_istft_hop_size', 5),
+                
+                # Multi-band processing
+                num_bands=getattr(decoder_config, 'num_bands', 4),
+                
+                # 2D CNN configuration (new parameters)
+                freq_dim=getattr(decoder_config, 'freq_dim', 16),
+                freq_upsample_rates=getattr(decoder_config, 'freq_upsample_rates', [2, 2]),
+                use_shuffle_blocks=getattr(decoder_config, 'use_shuffle_blocks', True),
+                num_2d_blocks=getattr(decoder_config, 'num_2d_blocks', 3),
+            )
+            
+            # Apply inference optimizations if specified
+            if hasattr(decoder_config, 'remove_weight_norm') and decoder_config.remove_weight_norm:
+                decoder.remove_weight_norm()
+        
+        elif args.decoder.type == "istftnet":
             from Modules.ONNX.hifigan import Decoder
             self.decoder = Decoder(dim_in=args.hidden_dim, style_dim=args.style_dim, dim_out=args.n_mels,
                     resblock_kernel_sizes = args.decoder.resblock_kernel_sizes,
