@@ -98,9 +98,25 @@ model_params:
       # use_shuffle_blocks: true
       # num_2d_blocks: 2                           # Fewer blocks
       # remove_weight_norm: false                  # Set to true for inference
-
-
-
+      
+      
+      # A balanced speed configuration
+      
+      # type: 'istftnet2_mb'
+      # resblock_kernel_sizes: [3, 7, 11]
+      # upsample_rates: [10, 6, 1, 1]
+      # upsample_initial_channel: 384              # Reduced for speed
+      # resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
+      # upsample_kernel_sizes: [20, 12, 3, 3]
+      # gen_istft_n_fft: 16                        # Smaller FFT
+      # gen_istft_hop_size: 4
+      # num_bands: 3                               # Fewer bands
+      # freq_dim: 12                                # Smaller frequency dimension
+      # freq_upsample_rates: [2, 2]
+      # use_shuffle_blocks: true
+      # num_2d_blocks: 3                           # Fewer blocks
+      # remove_weight_norm: false                  # Set to true for inference
+      
       
       # type: hifigan
       # resblock_kernel_sizes: [3,7,11]
