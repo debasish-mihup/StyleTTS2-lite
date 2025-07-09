@@ -449,33 +449,33 @@ def verify_onnx_model(onnx_path, example_inputs):
 
 
 # Example usage
-if __name__ == "__main__":
-    # Example of how to use the ONNX conversion
-    from Modules.istftnet2_mb import iSTFTNet2MB
+# if __name__ == "__main__":
+#     # Example of how to use the ONNX conversion
+#     from Modules.istftnet2_mb import iSTFTNet2MB
     
-    # Create model
-    model = iSTFTNet2MB(
-        dim_in=512,
-        style_dim=128,
-        num_bands=4,
-        gen_istft_n_fft=20,
-        gen_istft_hop_size=5
-    )
+#     # Create model
+#     model = iSTFTNet2MB(
+#         dim_in=512,
+#         style_dim=128,
+#         num_bands=4,
+#         gen_istft_n_fft=20,
+#         gen_istft_hop_size=5
+#     )
     
-    # Create example inputs
-    batch_size = 1
-    seq_len = 100
-    x = torch.randn(batch_size, 512, seq_len)
-    s = torch.randn(batch_size, 128)
-    example_inputs = (x, s)
+#     # Create example inputs
+#     batch_size = 1
+#     seq_len = 100
+#     x = torch.randn(batch_size, 512, seq_len)
+#     s = torch.randn(batch_size, 128)
+#     example_inputs = (x, s)
     
-    # Convert to ONNX
-    convert_istftnet2mb_to_onnx(
-        model, 
-        "istftnet2_mb.onnx", 
-        example_inputs,
-        opset_version=11
-    )
+#     # Convert to ONNX
+#     convert_istftnet2mb_to_onnx(
+#         model, 
+#         "istftnet2_mb.onnx", 
+#         example_inputs,
+#         opset_version=11
+#     )
     
-    # Verify the ONNX model
-    verify_onnx_model("istftnet2_mb.onnx", example_inputs)
+#     # Verify the ONNX model
+#     verify_onnx_model("istftnet2_mb.onnx", example_inputs)
